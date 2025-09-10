@@ -14,28 +14,9 @@
 ### QR Code Installation
 Scan this QR code with your Android device to install the app directly:
 
-```
-  ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-  █ ▄▄▄▄▄ █▄▀▀▄▄▄██▄█▄▀▄▄ █▀█▄█▄█ ▄▄▄▄▄ █
-  █ █   █ ███▄█  ▄██▀█▄█ █ ▀ ▄ ▄█ █   █ █
-  █ █▄▄▄█ ██▄▀▄▀█▄██▄ ▄▄▄▄▀▀█████ █▄▄▄█ █
-  █▄▄▄▄▄▄▄█ █ ▀▄▀▄▀▄█ █▄█▄▀▄▀ ▀ █▄▄▄▄▄▄▄█
-  █▄ ▀▄ ▀▄█▀▄▄▄▀██ ▄ ▄  ▀ ▀▄█▄ ▀█▄▀▀██▀▄█
-  █▄█▄▀▄█▄▄▄█▀ ▀█▄▄▄ ▄▄▄▄▄ ▄▄█▄ ▀▄▄▄ ▄▄▄▄▄ ▄▄█
-  █ ▄▄ ▀ ▄█ ▄▄▄▄█▄▀▄█▀▄▀██ ▄█▀▀▀█▄▄▀ ▀ ▄█
-  █ ▀▀▄▄▀▄▀█▄  ▄▄▀▄▀▄▄▄▄█ ███▄▄█▀▄▀▄█▀▄ █
-  █▄▄▄▀ ▀▄▄█ ▀▀▀▄  █▀▄▀ █▄▄▄ █ █▀▄██ ▄▄▄█
-  ██ ▀█▀▄▄ ▄ █▄▀▀▀  █ ▄█▄▀▄▄▀ ▄ ▀█▄▀▀██ █
-  █▄█▀█▀▄▄▄▄ █▄██ ▄    ▀▀ ▄█  ▄ ▄▀  ▀ ▄█
-  █▄█▄███▄▄ █▄█▄   █▀▀▄█ ▀█▀▄██  ▄▀▀▀ █
-  █▀▄▀▀ ▄▄▀ ▄██▀█▄ ██▄▄▀▀█ ▄▀▀  █▄▄▀█▀▀▄█
-  █ ▄█ █▀▄▄ █ █▀▄█▄▀█▀  ▄▀████ █▄█ ▀  ▄ █
-  █▄█▄███▄▄ ▄█ ▄▄█ █▀▄▀ █ ▄▄▄▀█ ▄▄▄ █  ██
-  █ ▄▄▄▄▄ ██ ▀▀▄▀ ▄▀█▄  ▄█▄▄ ▀█ █▄█  ▄█ █
-  █ █   █ █  ▄▄ █ ▀ ▄▄  ██▀██▄ ▄  ▄▄ ██▄█
-  █ █▄▄▄█ █▀▄▀ █▄█▄ ▀▄▀▀██▄█▄  ██▀▄ █ ▀ █
-  █▄▄▄▄▄▄▄█▄█▄▄██▄███▄█▄█▄█▄█▄█▄▄▄██▄██▄█
-```
+<div align="center">
+  <img src="assets/qr.png" alt="TeaLeafNet APK Download QR Code" width="300" height="300">
+</div>
 
 **Installation URL:** `https://expo.dev/accounts/ddey78/projects/tealeafnet/builds/0c77e261-b9c2-4339-a3fa-c67a08609bf5`
 
@@ -120,6 +101,7 @@ TeaLeafNet/
 │       └── ModelService.ts          # TensorFlow.js model handling
 ├── assets/
 │   ├── appicon.png                  # App icon (120x120)
+│   ├── qr.png                       # QR code for APK download
 │   └── models/                      # TensorFlow Lite model files
 │       ├── stage1_nonleaf.tflite    # Leaf detection model (18MB)
 │       └── stage2_Tea_disease.tflite # Disease classification model (137MB)
