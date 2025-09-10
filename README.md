@@ -9,16 +9,16 @@
 ## 📱 Download & Install
 
 ### Direct APK Download
-**Latest Build:** [Download APK](https://expo.dev/accounts/ddey78/projects/tealeafnet/builds/0c77e261-b9c2-4339-a3fa-c67a08609bf5)
+**Latest Build:** [Download APK](https://expo.dev/accounts/ddey78/projects/tealeafnet/builds/d6f34bfb-c783-44d9-a289-09ec23846f99)
 
 ### QR Code Installation
 Scan this QR code with your Android device to install the app directly:
 
 <div align="center">
-  <img src="assets/qr.png" alt="TeaLeafNet APK Download QR Code" width="300" height="300">
+  <img src="assets/qr1.png" alt="TeaLeafNet APK Download QR Code" width="300" height="300">
 </div>
 
-**Installation URL:** `https://expo.dev/accounts/ddey78/projects/tealeafnet/builds/0c77e261-b9c2-4339-a3fa-c67a08609bf5`
+**Installation URL:** `https://expo.dev/accounts/ddey78/projects/tealeafnet/builds/d6f34bfb-c783-44d9-a289-09ec23846f99`
 
 ---
 
@@ -101,7 +101,7 @@ TeaLeafNet/
 │       └── ModelService.ts          # TensorFlow.js model handling
 ├── assets/
 │   ├── appicon.png                  # App icon (120x120)
-│   ├── qr.png                       # QR code for APK download
+│   ├── qr1.png                      # QR code for APK download
 │   └── models/                      # TensorFlow Lite model files
 │       ├── stage1_nonleaf.tflite    # Leaf detection model (18MB)
 │       └── stage2_Tea_disease.tflite # Disease classification model (137MB)
@@ -155,8 +155,8 @@ The app is configured to load model files from `assets/models/` directory:
 - **Build Status**: ✅ Successfully completed
 
 ### Build Details
-- **Build URL**: [View Build Details](https://expo.dev/accounts/ddey78/projects/tealeafnet/builds/0c77e261-b9c2-4339-a3fa-c67a08609bf5)
-- **APK Size**: ~278MB (includes model files)
+- **Build URL**: [View Build Details](https://expo.dev/accounts/ddey78/projects/tealeafnet/builds/d6f34bfb-c783-44d9-a289-09ec23846f99)
+- **APK Size**: ~139MB (includes model files and app icon)
 - **Installation**: Direct APK install on Android devices
 - **Distribution**: Available via QR code and direct download
 
