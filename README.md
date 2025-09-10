@@ -33,7 +33,7 @@ TeaLeafNet is a cutting-edge mobile application that leverages artificial intell
   - **Stage 1**: Leaf vs Non-leaf detection (18MB model)
   - **Stage 2**: Disease classification (137MB model)
 - **4 Disease Classes**: Healthy, Red Rust, Red Spider Mites, Brown Blight
-- **High Accuracy**: Trained on thousands of tea leaf images
+- **High Accuracy**: Trained on 5000 tea leaf images from Dibrugarh Tea Garden
 - **Confidence Scores**: Real-time probability analysis
 
 ### 📱 User Experience
