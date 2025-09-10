@@ -1,0 +1,43 @@
+{
+  "expo": {
+    "name": "TeaLeafNet",
+    "slug": "tealeafnet",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you select leaf images for analysis."
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "The app accesses your camera to let you take photos of tea leaves for analysis."
+        }
+      ]
+    ],
+    "sdkVersion": "53.0.0",
+    "extra": {
+      "eas": {
+        "projectId": "56538e85-e240-4188-876f-3345943e2e77"
+      }
+    }
+  }
+}
