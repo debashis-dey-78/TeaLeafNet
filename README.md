@@ -219,6 +219,152 @@ The app is configured to load model files from `assets/models/` directory:
   - Improve drainage
   - Avoid overhead watering
 
+## 🔨 EAS Build Instructions
+
+### Prerequisites
+- Node.js (v16 or higher)
+- npm or yarn
+- Expo CLI installed globally
+- EAS CLI installed globally
+- Expo account (free)
+
+### Step-by-Step Build Process
+
+#### 1. **Install Required Tools**
+```bash
+# Install Expo CLI globally
+npm install -g @expo/cli
+
+# Install EAS CLI globally
+npm install -g eas-cli
+```
+
+#### 2. **Login to Expo Account**
+```bash
+# Login to your Expo account
+npx expo login
+# or
+eas login
+```
+
+#### 3. **Configure EAS Build**
+```bash
+# Initialize EAS build configuration
+eas build:configure
+```
+
+#### 4. **Install Dependencies**
+```bash
+# Install project dependencies
+npm install
+
+# If you encounter dependency conflicts, use:
+npm install --legacy-peer-deps
+```
+
+#### 5. **Build for Android (APK)**
+```bash
+# Build APK for Android
+eas build --platform android --profile preview
+
+# For production build:
+eas build --platform android --profile production
+```
+
+#### 6. **Build for iOS (if needed)**
+```bash
+# Build for iOS (requires Apple Developer account)
+eas build --platform ios --profile preview
+```
+
+#### 7. **Monitor Build Progress**
+```bash
+# Check build status
+eas build:list
+
+# View specific build details
+eas build:view [BUILD_ID]
+```
+
+#### 8. **Download Built APK**
+```bash
+# Download the latest build
+eas build:download
+
+# Download specific build by ID
+eas build:download [BUILD_ID]
+```
+
+### Build Profiles Configuration
+
+The `eas.json` file contains build profiles:
+
+```json
+{
+  "cli": {
+    "version": ">= 3.0.0"
+  },
+  "build": {
+    "preview": {
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "production": {
+      "android": {
+        "buildType": "apk"
+      }
+    }
+  }
+}
+```
+
+### Common Build Commands
+
+```bash
+# Clear Expo cache before building
+npx expo start --clear
+
+# Check EAS build status
+eas build:list --limit 10
+
+# Cancel a running build
+eas build:cancel [BUILD_ID]
+
+# View build logs
+eas build:view [BUILD_ID] --logs
+```
+
+### Troubleshooting Build Issues
+
+1. **Dependency Conflicts**:
+   ```bash
+   npm install --legacy-peer-deps
+   ```
+
+2. **Clear All Caches**:
+   ```bash
+   npx expo start --clear
+   npm cache clean --force
+   ```
+
+3. **Update EAS CLI**:
+   ```bash
+   npm install -g eas-cli@latest
+   ```
+
+4. **Check Build Logs**:
+   ```bash
+   eas build:view [BUILD_ID] --logs
+   ```
+
+### Build Output
+- **APK File**: Ready for installation on Android devices
+- **Build URL**: Shareable link for direct download
+- **QR Code**: Scan to download on mobile devices
+
+---
+
 ## 💻 Development
 
 The app uses Expo for easy development and deployment. Key features:
