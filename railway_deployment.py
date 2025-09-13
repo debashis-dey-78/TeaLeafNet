@@ -252,6 +252,7 @@ def root():
         'status': 'running'
     })
 
+# For Gunicorn compatibility
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     logger.info(f"🚀 Starting TeaLeafNet TFLite API Server on port {port}")
@@ -259,3 +260,6 @@ if __name__ == '__main__':
     logger.info("🌍 This server runs 24/7 on Railway!")
     
     app.run(host='0.0.0.0', port=port, debug=False)
+
+# Gunicorn will use this app object
+application = app

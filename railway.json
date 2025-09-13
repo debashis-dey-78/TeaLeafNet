@@ -4,7 +4,7 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "python3 railway_deployment.py",
+    "startCommand": "gunicorn --bind 0.0.0.0:$PORT railway_deployment:app",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
   }

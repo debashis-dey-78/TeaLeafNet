@@ -1,1 +1,1 @@
-web: python3 railway_deployment.py
+web: gunicorn --bind 0.0.0.0:$PORT railway_deployment:app
