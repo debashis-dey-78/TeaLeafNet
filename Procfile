@@ -1,1 +1,1 @@
-web: python railway_deployment.py
+web: python3 railway_deployment.py
