@@ -1,89 +1,125 @@
 #!/usr/bin/env python3
 """
-TeaLeafNet TFLite Model Server for Railway
-This script runs your TFLite models 24/7 on Railway cloud platform
+TeaLeafNet TFLite Model Server for Google Colab (Google Drive Version)
+This script runs your TFLite models from Google Drive and provides a public API via ngrok
 """
 
-import os
+# Install required packages (run this first in Colab)
+# !pip install flask flask-cors tensorflow pillow
+# !wget -q -c -nc https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip
+# !unzip -o -q ngrok-stable-linux-amd64.zip
+
 import tensorflow as tf
 import numpy as np
 from PIL import Image
 import io
 import base64
 import requests
+import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import logging
-
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+import subprocess
+import threading
+import time
 
 class TeaLeafModel:
-    def __init__(self):
+    def __init__(self, use_google_drive=True):
         self.leaf_interpreter = None
         self.disease_interpreter = None
         self.disease_classes = ['bb', 'gl', 'rr', 'rsm']
+        self.use_google_drive = use_google_drive
         self.load_models()
     
     def load_models(self):
-        """Load TFLite models from Hugging Face"""
+        """Load TFLite models"""
         try:
-            logger.info("🤖 Loading TFLite models...")
+            if self.use_google_drive:
+                # Mount Google Drive and load from there
+                self.mount_google_drive()
+                self.load_models_from_drive()
+            else:
+                # Download models from Hugging Face
+                self.download_models_from_huggingface()
+                self.load_models_from_local()
             
-            # Create models directory
-            os.makedirs('models', exist_ok=True)
-            
-            # Download models from Hugging Face
-            self.download_models()
-            
-            # Load leaf detection model
-            self.leaf_interpreter = tf.lite.Interpreter(model_path='models/leaf_detection.tflite')
-            self.leaf_interpreter.allocate_tensors()
-            
-            # Load disease classification model
-            self.disease_interpreter = tf.lite.Interpreter(model_path='models/disease_classification.tflite')
-            self.disease_interpreter.allocate_tensors()
-            
-            logger.info("✅ TFLite models loaded successfully!")
+            print("✅ TFLite models loaded successfully!")
             self.print_model_info()
             
         except Exception as e:
-            logger.error(f"❌ Error loading models: {e}")
+            print(f"❌ Error loading models: {e}")
             raise e
     
-    def download_models(self):
+    def mount_google_drive(self):
+        """Mount Google Drive"""
+        try:
+            from google.colab import drive
+            drive.mount('/content/drive')
+            print("✅ Google Drive mounted successfully!")
+        except Exception as e:
+            print(f"❌ Error mounting Google Drive: {e}")
+            raise e
+    
+    def load_models_from_drive(self):
+        """Load models from Google Drive"""
+        try:
+            # Load leaf detection model from Google Drive
+            self.leaf_interpreter = tf.lite.Interpreter(
+                model_path='/content/drive/MyDrive/models/leaf_detection.tflite'
+            )
+            self.leaf_interpreter.allocate_tensors()
+            
+            # Load disease classification model from Google Drive
+            self.disease_interpreter = tf.lite.Interpreter(
+                model_path='/content/drive/MyDrive/models/tea_disease-clasification.tflite'
+            )
+            self.disease_interpreter.allocate_tensors()
+            
+            print("✅ Models loaded from Google Drive!")
+            
+        except Exception as e:
+            print(f"❌ Error loading models from Google Drive: {e}")
+            raise e
+    
+    def download_models_from_huggingface(self):
         """Download TFLite models from Hugging Face"""
         models = {
             'leaf_detection.tflite': 'https://huggingface.co/kd8811/TeaLeafNet/resolve/main/leaf_detection.tflite',
             'disease_classification.tflite': 'https://huggingface.co/kd8811/TeaLeafNet/resolve/main/disease_classification.tflite'
         }
         
+        os.makedirs('models', exist_ok=True)
+        
         for filename, url in models.items():
             if not os.path.exists(f'models/{filename}'):
-                logger.info(f"📥 Downloading {filename}...")
-                response = requests.get(url, timeout=30)
-                response.raise_for_status()
-                
+                print(f"Downloading {filename}...")
+                response = requests.get(url)
                 with open(f'models/{filename}', 'wb') as f:
                     f.write(response.content)
-                logger.info(f"✅ {filename} downloaded successfully!")
-            else:
-                logger.info(f"✅ {filename} already exists")
+                print(f"✅ {filename} downloaded successfully!")
+    
+    def load_models_from_local(self):
+        """Load models from local directory"""
+        # Load leaf detection model
+        self.leaf_interpreter = tf.lite.Interpreter(model_path='models/leaf_detection.tflite')
+        self.leaf_interpreter.allocate_tensors()
+        
+        # Load disease classification model
+        self.disease_interpreter = tf.lite.Interpreter(model_path='models/disease_classification.tflite')
+        self.disease_interpreter.allocate_tensors()
     
     def print_model_info(self):
         """Print model input/output details"""
-        logger.info("📊 Model Information:")
+        print("\n📊 Model Information:")
         
         # Leaf detection model info
         leaf_input = self.leaf_interpreter.get_input_details()[0]
         leaf_output = self.leaf_interpreter.get_output_details()[0]
-        logger.info(f"Leaf Detection - Input: {leaf_input['shape']}, Output: {leaf_output['shape']}")
+        print(f"Leaf Detection - Input: {leaf_input['shape']}, Output: {leaf_output['shape']}")
         
         # Disease classification model info
         disease_input = self.disease_interpreter.get_input_details()[0]
         disease_output = self.disease_interpreter.get_output_details()[0]
-        logger.info(f"Disease Classification - Input: {disease_input['shape']}, Output: {disease_output['shape']}")
+        print(f"Disease Classification - Input: {disease_input['shape']}, Output: {disease_output['shape']}")
     
     def preprocess_image(self, image_base64, target_size):
         """Preprocess image for model input"""
@@ -104,7 +140,7 @@ class TeaLeafModel:
             return image_array
             
         except Exception as e:
-            logger.error(f"❌ Error preprocessing image: {e}")
+            print(f"❌ Error preprocessing image: {e}")
             raise e
     
     def detect_leaf(self, image_base64):
@@ -131,7 +167,7 @@ class TeaLeafModel:
             }
             
         except Exception as e:
-            logger.error(f"❌ Error in leaf detection: {e}")
+            print(f"❌ Error in leaf detection: {e}")
             return {'isLeaf': False, 'confidence': 0.0}
     
     def classify_disease(self, image_base64):
@@ -159,23 +195,23 @@ class TeaLeafModel:
             }
             
         except Exception as e:
-            logger.error(f"❌ Error in disease classification: {e}")
+            print(f"❌ Error in disease classification: {e}")
             return {'class': 'bb', 'confidence': 0.0}
     
     def analyze_image(self, image_base64):
         """Complete analysis pipeline"""
         try:
-            logger.info("🔍 Starting image analysis...")
+            print("🔍 Starting image analysis...")
             
             # Stage 1: Leaf Detection
             leaf_result = self.detect_leaf(image_base64)
-            logger.info(f"Stage 1 - Leaf detected: {leaf_result['isLeaf']} (confidence: {leaf_result['confidence']:.3f})")
+            print(f"Stage 1 - Leaf detected: {leaf_result['isLeaf']} (confidence: {leaf_result['confidence']:.3f})")
             
             disease_result = None
             if leaf_result['isLeaf']:
                 # Stage 2: Disease Classification
                 disease_result = self.classify_disease(image_base64)
-                logger.info(f"Stage 2 - Disease: {disease_result['class']} (confidence: {disease_result['confidence']:.3f})")
+                print(f"Stage 2 - Disease: {disease_result['class']} (confidence: {disease_result['confidence']:.3f})")
             
             return {
                 'isLeaf': leaf_result['isLeaf'],
@@ -185,7 +221,7 @@ class TeaLeafModel:
             }
             
         except Exception as e:
-            logger.error(f"❌ Error in complete analysis: {e}")
+            print(f"❌ Error in complete analysis: {e}")
             return {
                 'isLeaf': False,
                 'leafConfidence': 0.0,
@@ -197,18 +233,17 @@ class TeaLeafModel:
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
-# Initialize the model
-logger.info("🤖 Initializing TFLite models...")
-model = TeaLeafModel()
+# Initialize the model (set use_google_drive=True to use Google Drive)
+print("🤖 Initializing TFLite models...")
+model = TeaLeafModel(use_google_drive=True)  # Set to False to use Hugging Face
 
 @app.route('/health', methods=['GET'])
 def health_check():
     """Health check endpoint"""
     return jsonify({
         'status': 'healthy',
-        'service': 'TeaLeafNet TFLite API (Railway)',
-        'models_loaded': model.leaf_interpreter is not None and model.disease_interpreter is not None,
-        'platform': 'Railway'
+        'service': 'TeaLeafNet TFLite API (Google Drive)',
+        'models_loaded': model.leaf_interpreter is not None and model.disease_interpreter is not None
     })
 
 @app.route('/analyze', methods=['POST'])
@@ -228,38 +263,66 @@ def analyze_image():
         return jsonify(result)
         
     except Exception as e:
-        logger.error(f"❌ API Error: {e}")
+        print(f"❌ API Error: {e}")
         return jsonify({'error': str(e)}), 500
 
 @app.route('/test', methods=['GET'])
 def test_endpoint():
     """Test endpoint with sample data"""
     return jsonify({
-        'message': 'TeaLeafNet TFLite API is running on Railway!',
+        'message': 'TeaLeafNet TFLite API is running!',
         'endpoints': ['/health', '/analyze', '/test'],
         'status': 'ready',
-        'platform': 'Railway',
-        'always_on': True
+        'source': 'Google Drive'
     })
 
-@app.route('/', methods=['GET'])
-def root():
-    """Root endpoint"""
-    return jsonify({
-        'message': 'TeaLeafNet TFLite API Server',
-        'version': '1.0.0',
-        'platform': 'Railway',
-        'status': 'running'
-    })
+def start_ngrok():
+    """Start ngrok tunnel"""
+    try:
+        # Start ngrok on port 5000
+        subprocess.run(['./ngrok', 'http', '5000', '--log=stdout'], check=True)
+    except Exception as e:
+        print(f"❌ Error starting ngrok: {e}")
 
-# For Gunicorn compatibility
+def get_ngrok_url():
+    """Get ngrok public URL"""
+    try:
+        response = requests.get('http://localhost:4040/api/tunnels')
+        tunnels = response.json()['tunnels']
+        
+        if tunnels:
+            return tunnels[0]['public_url']
+        else:
+            return None
+    except Exception as e:
+        print(f"❌ Error getting ngrok URL: {e}")
+        return None
+
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    logger.info(f"🚀 Starting TeaLeafNet TFLite API Server on port {port}")
-    logger.info("📱 Your React Native app can now connect to this API!")
-    logger.info("🌍 This server runs 24/7 on Railway!")
+    print("\n🎉 TeaLeafNet TFLite API Server Starting...")
     
-    app.run(host='0.0.0.0', port=port, debug=False)
-
-# Gunicorn will use this app object
-application = app
+    # Start ngrok in background
+    print("🌍 Starting ngrok tunnel...")
+    ngrok_thread = threading.Thread(target=start_ngrok, daemon=True)
+    ngrok_thread.start()
+    
+    # Wait for ngrok to start
+    time.sleep(5)
+    
+    # Get ngrok URL
+    ngrok_url = get_ngrok_url()
+    if ngrok_url:
+        print(f"🌍 Your API is now public at: {ngrok_url}")
+        print(f"📋 Health check: {ngrok_url}/health")
+        print(f"🔍 Test endpoint: {ngrok_url}/test")
+        print(f"\n📱 Update your React Native app with this URL:")
+        print(f"API_BASE_URL = '{ngrok_url}'")
+    else:
+        print("❌ Could not get ngrok URL. Check manually at http://localhost:4040")
+    
+    print("\n🚀 Starting Flask server...")
+    print("📱 Your React Native app can now connect to this API!")
+    print("\n⚠️  Keep this running to keep the API alive")
+    print("⚠️  Don't close this or the API will stop")
+    
+    app.run(host='0.0.0.0', port=5000, debug=False)
